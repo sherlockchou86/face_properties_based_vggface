@@ -8,7 +8,8 @@ The main work in this repo is removing the top layers(mlp) from original vggface
 ![](./pngs/estimation_result_0.png)
 
 > Please move to [here](https://www.cnblogs.com/xiaozhi_5638/) if you are Chinese, WeChat gongzhonghao: `一级合格品` sharing articals about deep learning and computer vision.
-<img style="width:160px;height:160px" src="./pngs/qcode.png"  alt="真棒" align=center />
+<img style="width:160px;height:160px" src="./pngs/qcode.png"  alt="微信公众号 分享深度学习和计算机视觉原创文章"/>
+
 # Dependencies
 ### libs:
 - python 3.5

@@ -1,5 +1,8 @@
 '''VGGFace models for Keras.
 
+@zhouzhi
+adapted to tensorflow 2.0
+
 # Notes:
 - Utility functions are modified versions of Keras functions [Keras](https://keras.io)
 
@@ -8,8 +11,11 @@
 
 
 import numpy as np
-from keras import backend as K
-from keras.utils.data_utils import get_file
+from tensorflow.keras import backend as K
+from tensorflow.keras.utils import get_file
+
+import cv2
+from PIL import Image, ImageDraw, ImageFont
 
 V1_LABELS_PATH = 'https://github.com/rcmalli/keras-vggface/releases/download/v2.0/rcmalli_vggface_labels_v1.npy'
 V2_LABELS_PATH = 'https://github.com/rcmalli/keras-vggface/releases/download/v2.0/rcmalli_vggface_labels_v2.npy'
@@ -34,29 +40,31 @@ def preprocess_input(x, data_format=None, version=1):
         data_format = K.image_data_format()
     assert data_format in {'channels_last', 'channels_first'}
 
+    # mean subtraction
     if version == 1:
         if data_format == 'channels_first':
-            x_temp = x_temp[:, ::-1, ...]
+            #x_temp = x_temp[:, ::-1, ...]
             x_temp[:, 0, :, :] -= 93.5940
             x_temp[:, 1, :, :] -= 104.7624
             x_temp[:, 2, :, :] -= 129.1863
         else:
-            x_temp = x_temp[..., ::-1]
+            #x_temp = x_temp[..., ::-1]
             x_temp[..., 0] -= 93.5940
             x_temp[..., 1] -= 104.7624
             x_temp[..., 2] -= 129.1863
 
     elif version == 2:
         if data_format == 'channels_first':
-            x_temp = x_temp[:, ::-1, ...]
+            #x_temp = x_temp[:, ::-1, ...]
             x_temp[:, 0, :, :] -= 91.4953
             x_temp[:, 1, :, :] -= 103.8827
             x_temp[:, 2, :, :] -= 131.0912
         else:
-            x_temp = x_temp[..., ::-1]
-            x_temp[..., 0] -= 91.4953
-            x_temp[..., 1] -= 103.8827
-            x_temp[..., 2] -= 131.0912
+            # already BGR in opencv
+            #x_temp = x_temp[..., ::-1]
+            x_temp[..., 0] -= 91
+            x_temp[..., 1] -= 103
+            x_temp[..., 2] -= 131
     else:
         raise NotImplementedError
 
@@ -95,3 +103,17 @@ def decode_predictions(preds, top=5):
         result.sort(key=lambda x: x[1], reverse=True)
         results.append(result)
     return results
+
+
+# draw text on screen
+def putText(frame, text, color, location, size=20):
+    cv2_im = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    pil_im = Image.fromarray(cv2_im)
+
+    draw = ImageDraw.Draw(pil_im)
+    font = ImageFont.truetype("./fonts/msyh.ttc", size, encoding="utf-8")
+    draw.text(location, text, color, font=font)
+
+    cv2_text_im = cv2.cvtColor(np.array(pil_im), cv2.COLOR_RGB2BGR)
+
+    return cv2_text_im
