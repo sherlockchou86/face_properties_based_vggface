@@ -74,6 +74,7 @@ The training code has used some preprocess methods such as `mean subtraction`, m
 
 ![](./pngs/epoch_race_loss.png)
 
+Note: blue line is val_loss and orange line is train_loss.
 
 # Estimation results
 The age estimation result is not good enough you can modify the data to do more research.
